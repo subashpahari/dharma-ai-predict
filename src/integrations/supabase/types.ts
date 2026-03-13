@@ -14,7 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          appendix_diameter: number
+          body_temperature: number
+          clinical_note: string
+          confidence_high: number
+          confidence_low: number
+          created_at: string
+          crp: number
+          dharma_score: number
+          free_fluids: boolean
+          id: string
+          loss_of_appetite: boolean
+          nausea: boolean
+          neutrophil_percentage: number
+          peritonitis: string
+          result_status: string
+          urinary_ketones: string
+          user_id: string
+          wbc_count: number
+        }
+        Insert: {
+          appendix_diameter?: number
+          body_temperature?: number
+          clinical_note?: string
+          confidence_high?: number
+          confidence_low?: number
+          created_at?: string
+          crp?: number
+          dharma_score?: number
+          free_fluids?: boolean
+          id?: string
+          loss_of_appetite?: boolean
+          nausea?: boolean
+          neutrophil_percentage?: number
+          peritonitis?: string
+          result_status?: string
+          urinary_ketones?: string
+          user_id: string
+          wbc_count?: number
+        }
+        Update: {
+          appendix_diameter?: number
+          body_temperature?: number
+          clinical_note?: string
+          confidence_high?: number
+          confidence_low?: number
+          created_at?: string
+          crp?: number
+          dharma_score?: number
+          free_fluids?: boolean
+          id?: string
+          loss_of_appetite?: boolean
+          nausea?: boolean
+          neutrophil_percentage?: number
+          peritonitis?: string
+          result_status?: string
+          urinary_ketones?: string
+          user_id?: string
+          wbc_count?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
