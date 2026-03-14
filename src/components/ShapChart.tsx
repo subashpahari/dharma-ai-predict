@@ -32,13 +32,13 @@ export default function ShapChart({ shapValues }: Props) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.05 * i }}
-              className="flex items-center gap-3"
+              className="flex items-center gap-2 sm:gap-3"
             >
-              <span className="text-xs text-muted-foreground w-32 text-right flex-shrink-0 truncate">
+              <span className="text-[10px] sm:text-xs text-muted-foreground w-20 sm:w-32 text-right flex-shrink-0 truncate" title={item.feature}>
                 {item.feature}
               </span>
-              <div className="flex-1 flex items-center h-6">
-                <div className="relative w-full h-5 bg-secondary/50 rounded overflow-hidden">
+              <div className="flex-1 flex items-center h-5 sm:h-6">
+                <div className="relative w-full h-4 sm:h-5 bg-secondary/50 rounded overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${width}%` }}
@@ -49,10 +49,11 @@ export default function ShapChart({ shapValues }: Props) {
                   />
                 </div>
               </div>
-              <span className={`text-xs font-mono w-12 text-right flex-shrink-0 ${isPositive ? 'text-coral' : 'text-success'}`}>
+              <span className={`text-[10px] sm:text-xs font-mono w-10 sm:w-12 text-right flex-shrink-0 ${isPositive ? 'text-coral' : 'text-success'}`}>
                 {isPositive ? '+' : ''}{item.contribution.toFixed(1)}
               </span>
             </motion.div>
+
           );
         })}
       </div>

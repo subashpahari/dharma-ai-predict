@@ -43,8 +43,8 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <h3 className="font-display font-semibold text-foreground">Clinical Parameters</h3>
       </div>
 
-      {/* Select inputs - 2 column grid */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Select inputs - 1 column mobile, 2 column desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Nausea</label>
           <select value={form.nausea ? 'yes' : 'no'} onChange={e => setForm({ ...form, nausea: e.target.value === 'yes' })} className={selectClass}>
@@ -87,7 +87,7 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
       </div>
 
       {/* Number inputs */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}><Droplets className="w-3 h-3 inline mr-1" />WBC Count (10³/μL)</label>
           <input type="number" step="0.1" min="0" max="50" value={form.wbcCount} onChange={e => setForm({ ...form, wbcCount: +e.target.value })} className={inputClass} />
@@ -104,7 +104,8 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
           <label className={labelClass}>CRP (mg/L)</label>
           <input type="number" step="0.1" min="0" max="500" value={form.crp} onChange={e => setForm({ ...form, crp: +e.target.value })} className={inputClass} />
         </div>
-        <div className="col-span-2">
+        <div className="sm:col-span-2">
+
           <label className={labelClass}>Appendix Diameter (mm)</label>
           <input type="number" step="0.1" min="0" max="30" value={form.appendixDiameter} onChange={e => setForm({ ...form, appendixDiameter: +e.target.value })} className={inputClass} />
         </div>

@@ -18,7 +18,8 @@ export default function LeftSidebar({ reports, loading, onSelectReport, selected
   };
 
   return (
-    <div className="w-72 min-w-[280px] border-r border-border bg-sidebar flex flex-col h-full">
+    <div className="w-full h-full flex flex-col bg-sidebar">
+
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-sidebar-foreground tracking-wide uppercase">Saved Reports</h2>

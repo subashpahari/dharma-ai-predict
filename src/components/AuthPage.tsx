@@ -3,6 +3,10 @@ import { motion } from 'framer-motion';
 import { Brain, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { ModeToggle } from '@/components/ModeToggle';
+import GoogleTranslate from '@/components/GoogleTranslate';
+
+
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -32,9 +36,15 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen relative flex items-center justify-center bg-background p-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <GoogleTranslate />
+        <ModeToggle />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
+
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >

@@ -42,16 +42,16 @@ export default function ClinicalEvidenceModal({ open, onClose }: Props) {
               <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                 <p className="font-medium text-foreground mb-1">Reference Publication</p>
                 <p className="text-muted-foreground text-xs mb-2">
-                  Thapa, A. et al. "Machine Learning-Based Prediction of Acute Appendicitis Using Clinical and Laboratory Parameters"
+                  Thapa Kshetri, A. et al. "Dharma: A novel, clinically grounded machine learning framework for pediatric appendicitis-Diagnosis, severity assessment and evidence-based clinical decision support"
                 </p>
                 <a
-                  href="https://doi.org/10.1101/2025.05.27.25328468"
+                  href="https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0000908"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-primary hover:underline text-xs"
                 >
                   <ExternalLink className="w-3 h-3" />
-                  doi: 10.1101/2025.05.27.25328468
+                  doi: 10.1371/journal.pdig.0000908
                 </a>
               </div>
               <p>

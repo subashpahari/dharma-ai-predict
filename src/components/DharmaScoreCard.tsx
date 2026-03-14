@@ -24,30 +24,70 @@ export default function DharmaScoreCard({ result }: Props) {
       transition={{ duration: 0.4 }}
       className={`glass-card p-6 ${bgGlow}`}
     >
-      <div className="flex items-start gap-5">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         {/* Score Circle */}
-        <div className={`w-24 h-24 rounded-full border-4 ${ringColor} flex items-center justify-center flex-shrink-0 bg-card`}>
+        <div className={`w-28 h-28 rounded-full border-4 ${ringColor} flex items-center justify-center flex-shrink-0 bg-card shadow-inner`}>
           <div className="text-center">
-            <span className={`text-3xl font-display font-bold ${scoreColor}`}>{dharmaScore}</span>
-            <span className={`text-sm ${scoreColor}`}>%</span>
+            <span className={`text-4xl font-display font-bold ${scoreColor}`}>{dharmaScore}</span>
+            <span className={`block text-xs uppercase tracking-tighter ${scoreColor} opacity-70`}>Dharma Score</span>
           </div>
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <StatusIcon className={`w-5 h-5 ${scoreColor}`} />
-            <h3 className={`font-display font-bold text-lg ${scoreColor}`}>{resultStatus}</h3>
+        <div className="flex-1 min-w-0 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+            <div className="flex items-center justify-center sm:justify-start gap-2">
+              <StatusIcon className={`w-5 h-5 ${scoreColor}`} />
+              <h3 className={`font-display font-bold text-xl ${scoreColor}`}>{resultStatus}</h3>
+            </div>
+            <div className="px-2 py-0.5 rounded-full bg-secondary text-[10px] font-bold text-muted-foreground w-fit mx-auto sm:mx-0">
+              CI: {confidenceLow}% – {confidenceHigh}%
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground mb-3">
-            Confidence Interval: {confidenceLow}% – {confidenceHigh}%
-          </p>
 
-          <div className="flex items-start gap-2 p-3 rounded-lg bg-secondary/50 border border-border">
-            <Shield className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-secondary-foreground leading-relaxed">{clinicalNote}</p>
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-secondary/40 border border-border/50">
+            <Shield className="w-5 h-5 text-primary mt-0.5 flex-shrink-0 hidden sm:block" />
+            <p className="text-sm text-secondary-foreground leading-relaxed italic">
+              "{clinicalNote}"
+            </p>
           </div>
         </div>
       </div>
+
+      {result.complication && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="mt-6 pt-6 border-t border-border"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <AlertTriangle className={`w-4 h-4 ${result.complication.probability >= 50 ? 'text-coral' : 'text-warning'}`} />
+            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">Complication Risk Analysis</h4>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div className={`w-20 h-20 rounded-full border-4 ${result.complication.probability >= 50 ? 'border-coral/30' : 'border-warning/30'} flex items-center justify-center flex-shrink-0 bg-secondary/30`}>
+              <div className="text-center">
+                <span className={`text-xl font-bold ${result.complication.probability >= 50 ? 'text-coral' : 'text-warning'}`}>{result.complication.probability}%</span>
+              </div>
+            </div>
+
+            <div className="flex-1 w-full">
+              <div className="flex items-center gap-2 mb-2 justify-center sm:justify-start">
+                <span className={`text-sm font-bold ${result.complication.probability >= 50 ? 'text-coral' : 'text-warning'}`}>
+                  {result.complication.result}
+                </span>
+                <div className="px-2 py-0.5 rounded-full bg-secondary text-[9px] font-bold text-muted-foreground">
+                  CI: {result.complication.confidenceLow}% – {result.complication.confidenceHigh}%
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed p-3 rounded-lg bg-secondary/20 border border-border/40 italic">
+                "{result.complication.note}"
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
+
   );
 }

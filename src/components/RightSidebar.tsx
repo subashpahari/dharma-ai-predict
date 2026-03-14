@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-import { Download, BookOpen, User, Settings, LogOut, Brain } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+import { Download, BookOpen, User, Settings, LogOut, Brain, Shield } from 'lucide-react';
 
 interface RightSidebarProps {
   onDownloadPDF: () => void;
@@ -10,29 +12,36 @@ interface RightSidebarProps {
   hasResult: boolean;
 }
 
-const ToolButton = ({ icon: Icon, label, onClick, disabled, badge }: { icon: any; label: string; onClick: () => void; disabled?: boolean; badge?: string }) => (
+const ToolButton = ({ icon: Icon, label, onClick, disabled, badge, variant }: { icon: any; label: string; onClick: () => void; disabled?: boolean; badge?: string; variant?: string }) => (
   <motion.button
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
     onClick={onClick}
     disabled={disabled}
-    className="w-full glass-card-hover p-4 flex flex-col items-center gap-2 text-center disabled:opacity-30 disabled:cursor-not-allowed group"
+    className={`w-full p-4 flex flex-col items-center gap-2 text-center disabled:opacity-30 disabled:cursor-not-allowed group rounded-xl border border-transparent transition-all ${
+      variant === 'admin' ? 'bg-coral/5 hover:border-coral/20' : 'glass-card-hover'
+    }`}
   >
     <div className="relative">
-      <Icon className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+      <Icon className={`w-6 h-6 transition-colors ${variant === 'admin' ? 'text-coral' : 'text-muted-foreground group-hover:text-primary'}`} />
       {badge && (
         <span className="absolute -top-1 -right-3 text-[9px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-bold">
           {badge}
         </span>
       )}
     </div>
-    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{label}</span>
+    <span className={`text-xs transition-colors ${variant === 'admin' ? 'text-coral/80 group-hover:text-coral' : 'text-muted-foreground group-hover:text-foreground'}`}>{label}</span>
   </motion.button>
 );
 
 export default function RightSidebar({ onDownloadPDF, onClinicalEvidence, onCreatorInfo, onSignOut, userEmail, hasResult }: RightSidebarProps) {
+  const navigate = useNavigate();
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+  const isAdmin = userEmail === adminEmail;
+
   return (
-    <div className="w-64 min-w-[240px] border-l border-border bg-sidebar flex flex-col h-full">
+    <div className="w-full h-full flex flex-col bg-sidebar">
+
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-sidebar-foreground tracking-wide uppercase">Studio</h2>
@@ -41,7 +50,16 @@ export default function RightSidebar({ onDownloadPDF, onClinicalEvidence, onCrea
       </div>
 
       <div className="flex-1 p-3 space-y-2 overflow-y-auto scrollbar-thin">
+        {isAdmin && (
+          <ToolButton 
+            icon={Shield} 
+            label="Admin Control" 
+            onClick={() => navigate('/admin')} 
+            variant="admin"
+          />
+        )}
         <ToolButton icon={Download} label="Download PDF Report" onClick={onDownloadPDF} disabled={!hasResult} />
+
         <ToolButton icon={BookOpen} label="Clinical Evidence" onClick={onClinicalEvidence} />
         <ToolButton icon={User} label="About Creator" onClick={onCreatorInfo} />
       </div>

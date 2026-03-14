@@ -24,84 +24,90 @@ export interface PredictionResult {
   resultStatus: string;
   clinicalNote: string;
   shapValues: ShapValue[];
+  complication?: {
+    probability: number;
+    confidenceLow: number;
+    confidenceHigh: number;
+    result: string;
+    note: string;
+    shapValues: ShapValue[];
+  };
 }
 
-export function calculatePrediction(input: PredictionInput): PredictionResult {
-  let score = 10;
-  const shapValues: ShapValue[] = [];
+const BACKEND_URL = 'http://127.0.0.1:8000';
 
-  // WBC Count contribution
-  const wbcContrib = Math.min((input.wbcCount - 7) * 4, 20);
-  score += Math.max(wbcContrib, 0);
-  shapValues.push({ feature: 'WBC Count', value: input.wbcCount, contribution: wbcContrib });
+export async function calculatePrediction(input: PredictionInput): Promise<PredictionResult> {
+  const peritonitisMap = { none: 0, local: 1, generalized: 2 };
+  const ketoneMap = { none: 0, trace: 0, small: 1, moderate: 2, large: 3 };
 
-  // CRP
-  const crpContrib = Math.min(input.crp * 0.15, 15);
-  score += Math.max(crpContrib, 0);
-  shapValues.push({ feature: 'CRP', value: input.crp, contribution: crpContrib });
+  const formData = {
+    Nausea: input.nausea ? 1 : 0,
+    Loss_of_Appetite: input.lossOfAppetite ? 1 : 0,
+    Peritonitis: peritonitisMap[input.peritonitis],
+    WBC_Count: input.wbcCount,
+    Body_Temperature: input.bodyTemperature,
+    Neutrophil_Percentage: input.neutrophilPercentage,
+    CRP: input.crp,
+    Ketones_in_Urine: ketoneMap[input.urinaryKetones],
+    Appendix_Diameter: input.appendixDiameter,
+    Free_Fluids: input.freeFluids ? 1 : 0,
+  };
 
-  // Appendix Diameter
-  const diamContrib = input.appendixDiameter > 6 ? Math.min((input.appendixDiameter - 6) * 5, 18) : -5;
-  score += Math.max(diamContrib, -5);
-  shapValues.push({ feature: 'Appendix Diameter', value: input.appendixDiameter, contribution: diamContrib });
+  try {
+    const response = await fetch(`${BACKEND_URL}/predict`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-  // Neutrophil %
-  const neutContrib = Math.min((input.neutrophilPercentage - 65) * 0.5, 12);
-  score += Math.max(neutContrib, -3);
-  shapValues.push({ feature: 'Neutrophil %', value: input.neutrophilPercentage, contribution: neutContrib });
+    if (!response.ok) {
+      throw new Error('Prediction request failed');
+    }
 
-  // Temperature
-  const tempContrib = input.bodyTemperature > 37.5 ? Math.min((input.bodyTemperature - 37.5) * 8, 10) : -2;
-  score += Math.max(tempContrib, -2);
-  shapValues.push({ feature: 'Body Temperature', value: input.bodyTemperature, contribution: tempContrib });
+    const data = await response.json();
+    const diag = data.diagnosis;
+    const comp = data.complication;
+    
+    const shapValuesDiag: ShapValue[] = diag.shap_values.map((item: any) => ({
+      feature: item.feature,
+      value: 0,
+      contribution: item.contribution
+    })).sort((a: ShapValue, b: ShapValue) => Math.abs(b.contribution) - Math.abs(a.contribution));
 
-  // Nausea
-  const nauseaContrib = input.nausea ? 6 : -2;
-  score += nauseaContrib;
-  shapValues.push({ feature: 'Nausea', value: input.nausea ? 1 : 0, contribution: nauseaContrib });
+    let complicationData = undefined;
+    if (comp) {
+      const shapValuesComp: ShapValue[] = comp.shap_values.map((item: any) => ({
+        feature: item.feature,
+        value: 0,
+        contribution: item.contribution
+      })).sort((a: ShapValue, b: ShapValue) => Math.abs(b.contribution) - Math.abs(a.contribution));
 
-  // Loss of Appetite
-  const appetiteContrib = input.lossOfAppetite ? 5 : -1;
-  score += appetiteContrib;
-  shapValues.push({ feature: 'Loss of Appetite', value: input.lossOfAppetite ? 1 : 0, contribution: appetiteContrib });
+      complicationData = {
+        probability: Math.round(comp.probability),
+        confidenceLow: Math.round(comp.confidence_interval[0]),
+        confidenceHigh: Math.round(comp.confidence_interval[1]),
+        result: comp.result,
+        note: comp.note,
+        shapValues: shapValuesComp
+      };
+    }
 
-  // Peritonitis
-  const peritonitisMap = { none: -3, local: 8, generalized: 15 };
-  const periContrib = peritonitisMap[input.peritonitis];
-  score += periContrib;
-  shapValues.push({ feature: 'Peritonitis', value: periContrib, contribution: periContrib });
+    return {
+      dharmaScore: Math.round(diag.probability),
+      confidenceLow: Math.round(diag.confidence_interval[0]),
+      confidenceHigh: Math.round(diag.confidence_interval[1]),
+      resultStatus: diag.result,
+      clinicalNote: diag.note,
+      shapValues: shapValuesDiag,
+      complication: complicationData
+    };
 
-  // Urinary Ketones
-  const ketoneMap = { none: 0, trace: 2, small: 4, moderate: 6, large: 8 };
-  const ketoneContrib = ketoneMap[input.urinaryKetones];
-  score += ketoneContrib;
-  shapValues.push({ feature: 'Urinary Ketones', value: ketoneContrib, contribution: ketoneContrib });
 
-  // Free Fluids
-  const fluidContrib = input.freeFluids ? 10 : -2;
-  score += fluidContrib;
-  shapValues.push({ feature: 'Free Fluids', value: input.freeFluids ? 1 : 0, contribution: fluidContrib });
-
-  const dharmaScore = Math.max(0, Math.min(100, Math.round(score)));
-  const margin = Math.round(3 + Math.random() * 4);
-  const confidenceLow = Math.max(0, dharmaScore - margin);
-  const confidenceHigh = Math.min(100, dharmaScore + margin);
-
-  let resultStatus: string;
-  let clinicalNote: string;
-
-  if (dharmaScore >= 75) {
-    resultStatus = 'High Probability of Appendicitis';
-    clinicalNote = 'Clinical findings strongly suggest acute appendicitis. Urgent surgical consultation is recommended. Consider CT abdomen for confirmatory imaging if not already performed.';
-  } else if (dharmaScore >= 45) {
-    resultStatus = 'Moderate Probability of Appendicitis';
-    clinicalNote = 'Clinical presentation is equivocal. Recommend serial abdominal examinations, repeat laboratory studies in 6-8 hours, and consider CT abdomen with IV contrast for further evaluation.';
-  } else {
-    resultStatus = 'Low Probability of Appendicitis';
-    clinicalNote = 'Current clinical and laboratory parameters suggest a low likelihood of appendicitis. Consider alternative diagnoses. Discharge with return precautions may be appropriate if clinical picture supports it.';
+  } catch (error) {
+    console.error('Error calling prediction API:', error);
+    throw error;
   }
-
-  shapValues.sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
-
-  return { dharmaScore, confidenceLow, confidenceHigh, resultStatus, clinicalNote, shapValues };
 }
+

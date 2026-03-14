@@ -20,6 +20,11 @@ export interface Report {
   confidence_low: number;
   confidence_high: number;
   clinical_note: string;
+  complication_score?: number;
+  complication_status?: string;
+  complication_low?: number;
+  complication_high?: number;
+  complication_note?: string;
 }
 
 export function useReports(userId: string | undefined) {
@@ -61,9 +66,15 @@ export function useReports(userId: string | undefined) {
       confidence_high: result.confidenceHigh,
       result_status: result.resultStatus,
       clinical_note: result.clinicalNote,
+      complication_score: result.complication?.probability,
+      complication_status: result.complication?.result,
+      complication_low: result.complication?.confidenceLow,
+      complication_high: result.complication?.confidenceHigh,
+      complication_note: result.complication?.note,
     });
     fetchReports();
   };
+
 
   return { reports, loading, saveReport, fetchReports };
 }
