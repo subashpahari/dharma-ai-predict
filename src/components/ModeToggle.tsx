@@ -35,13 +35,6 @@ export function ModeToggle() {
           <Moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
         </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme("system")}
-          className={theme === "system" ? "bg-accent" : ""}
-        >
-          <Monitor className="mr-2 h-4 w-4" />
-          <span>System</span>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
