@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
-import AuthPage from '@/components/AuthPage';
+import LandingPage from '@/pages/LandingPage';
 import Dashboard from '@/pages/Dashboard';
 
 const Index = () => {
@@ -13,7 +13,7 @@ const Index = () => {
     );
   }
 
-  if (!user) return <AuthPage />;
+  if (!user) return <LandingPage />;
   return <Dashboard />;
 };
 
