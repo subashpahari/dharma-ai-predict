@@ -13,17 +13,37 @@ export function useAdmin() {
 
   const fetchAllReports = useCallback(async () => {
     setLoading(true);
-    // Note: This requires RLS to be disabled or a policy allowing reading all records for admin
-    const { data, error } = await supabase
+    
+    // 1. Fetch all profiles (User Directory)
+    const { data: profiles, error: pError } = await supabase
+      .from('profiles')
+      .select('user_id, email');
+
+    // 2. Fetch all reports
+    const { data: allReports, error: rError } = await supabase
       .from('reports')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching admin reports:', error);
-      setReports([]);
+    if (pError || rError) {
+      console.error('Data fetch error:', pError || rError);
+      // Fallback: If profiles fails, still show reports with IDs
+      if (allReports) {
+        setReports(allReports as AdminReport[]);
+      }
     } else {
-      setReports(data as AdminReport[]);
+      // 3. Map reports to include emails from profiles
+      const emailMap = (profiles || []).reduce((acc, p) => {
+        acc[p.user_id] = p.email;
+        return acc;
+      }, {} as Record<string, string>);
+
+      const formattedReports = (allReports || []).map(report => ({
+        ...report,
+        user_email: emailMap[report.user_id] || report.user_id
+      }));
+
+      setReports(formattedReports as AdminReport[]);
     }
     setLoading(false);
   }, []);
