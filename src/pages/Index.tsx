@@ -13,7 +13,6 @@ const Index = () => {
     );
   }
 
-  if (!user) return <AuthPage />;
   return <Dashboard />;
 };
 

@@ -3,13 +3,36 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import LandingPage from "./pages/LandingPage";
+import Index from "./pages/Index";
+import AuthPage from "./components/AuthPage";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 
 import { ThemeProvider } from "@/components/theme-provider";
+
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  if (loading) return null;
+  if (!user) return <>{children}</>;
+  
+  const redirectTo = searchParams.get('redirect') || localStorage.getItem('auth_redirect') || "/app";
+  const isDownload = searchParams.get('download') === 'true' || localStorage.getItem('pending_download') === 'true';
+  
+  // Clean up
+  localStorage.removeItem('auth_redirect');
+  
+  return <Navigate to={redirectTo + (isDownload ? '?download=true' : '')} />;
+};
+
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/auth" />;
+  return <>{children}</>;
+};
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -30,7 +53,19 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route 
+              path="/auth" 
+              element={
+                <AuthRoute>
+                  <AuthPage />
+                </AuthRoute>
+              } 
+            />
+            <Route 
+              path="/app" 
+              element={<Index />} 
+            />
             <Route 
               path="/admin" 
               element={
@@ -40,7 +75,7 @@ const App = () => (
               } 
             />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<LandingPage />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

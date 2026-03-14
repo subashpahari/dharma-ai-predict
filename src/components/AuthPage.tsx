@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Brain, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,7 +14,19 @@ export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signIn, signUp, signInWithGoogle } = useAuth();
+
+  const handleAuthSuccess = () => {
+    const redirectTo = searchParams.get('redirect') || localStorage.getItem('auth_redirect') || '/app';
+    const isDownload = searchParams.get('download') === 'true' || localStorage.getItem('pending_download') === 'true';
+    
+    // Clear temp storage
+    localStorage.removeItem('auth_redirect');
+    
+    navigate(redirectTo + (isDownload ? '?download=true' : ''));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +40,7 @@ export default function AuthPage() {
         const { error } = await signIn(email, password);
         if (error) throw error;
         toast.success('Welcome back!');
+        handleAuthSuccess();
       }
     } catch (err: any) {
       toast.error(err.message || 'Authentication failed');
@@ -105,6 +119,8 @@ export default function AuthPage() {
           <button
             onClick={async () => {
               try {
+                // For Google login, we can pass a redirect URL if supported by useAuth, 
+                // but AuthRoute will handle it if we just go to the origin default.
                 const { error } = await signInWithGoogle();
                 if (error) throw error;
               } catch (err: any) {
