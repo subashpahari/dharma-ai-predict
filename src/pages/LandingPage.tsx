@@ -22,13 +22,14 @@ export default function LandingPage() {
   const { user } = useAuth();
  
   useEffect(() => {
-    // If the user is logged in and hits the landing page, 
-    // we move them to the actual app dashboard for a smoother workflow.
-    if (user) {
+    // Check if we are returning from an auth flow that has a pending redirection or download
+    const hasPendingAction = localStorage.getItem('auth_redirect') || localStorage.getItem('pending_download');
+    
+    if (user && hasPendingAction) {
       navigate('/app');
     }
   }, [user, navigate]);
-
+ 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Navigation */}

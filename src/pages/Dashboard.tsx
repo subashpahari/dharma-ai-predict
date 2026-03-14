@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Menu, 
   Brain, 
@@ -79,6 +79,15 @@ export default function Dashboard() {
       localStorage.removeItem('pending_download');
       localStorage.removeItem('guest_last_input');
       localStorage.removeItem('guest_result');
+    }
+
+    // 3. Clear redirection flags once we've successfully reached the dashboard
+    if (user) {
+      localStorage.removeItem('auth_redirect');
+      // If there's no data to download, clear the flag anyway to prevent redirect loops
+      if (!currentInput || !currentResult) {
+        localStorage.removeItem('pending_download');
+      }
     }
   }, [user, lastInput, result, searchParams, setShowForm]);
  
@@ -191,10 +200,12 @@ export default function Dashboard() {
             </SheetContent>
           </Sheet>
 
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-            <Brain className="w-5 h-5 text-primary" />
-          </div>
-          <h1 className="font-display font-bold text-lg text-gradient hidden sm:block">DharmaAI</h1>
+          <Link to="/" className="flex items-center gap-3 group transition-opacity hover:opacity-80">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+              <Brain className="w-5 h-5 text-primary" />
+            </div>
+            <h1 className="font-display font-bold text-lg text-gradient hidden sm:block">DharmaAI</h1>
+          </Link>
           <span className="text-xs text-muted-foreground hidden lg:block">Appendicitis Prediction Dashboard</span>
         </div>
         

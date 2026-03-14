@@ -5,27 +5,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
+import AdminDashboard from "./pages/AdminDashboard";
 import AuthPage from "./components/AuthPage";
-import AdminDashboard from "./pages/AdminDashboard.tsx";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate, useSearchParams } from "react-router-dom";
 
 import { ThemeProvider } from "@/components/theme-provider";
 
-const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  const [searchParams] = useSearchParams();
-  if (loading) return null;
-  if (!user) return <>{children}</>;
-  
-  const redirectTo = searchParams.get('redirect') || localStorage.getItem('auth_redirect') || "/app";
-  const isDownload = searchParams.get('download') === 'true' || localStorage.getItem('pending_download') === 'true';
-  
-  // Clean up
-  localStorage.removeItem('auth_redirect');
-  
-  return <Navigate to={redirectTo + (isDownload ? '?download=true' : '')} />;
-};
+
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -41,6 +28,21 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   if (loading) return null;
   if (user?.email !== adminEmail) return <Navigate to="/" />;
   return <>{children}</>;
+};
+
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  if (loading) return null;
+  if (!user) return <>{children}</>;
+  
+  const redirectTo = searchParams.get('redirect') || localStorage.getItem('auth_redirect') || "/app";
+  const isDownload = searchParams.get('download') === 'true' || localStorage.getItem('pending_download') === 'true';
+  
+  // Clean up
+  localStorage.removeItem('auth_redirect');
+  
+  return <Navigate to={redirectTo + (isDownload ? '?download=true' : '')} />;
 };
 
 const queryClient = new QueryClient();
@@ -72,7 +74,7 @@ const App = () => (
                 <AdminRoute>
                   <AdminDashboard />
                 </AdminRoute>
-              } 
+              }
             />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<LandingPage />} />
@@ -82,6 +84,5 @@ const App = () => (
     </ThemeProvider>
   </QueryClientProvider>
 );
-
 
 export default App;
