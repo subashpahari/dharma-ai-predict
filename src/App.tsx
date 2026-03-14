@@ -6,9 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
+import AuthPage from "./components/AuthPage.tsx";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
-
 import { ThemeProvider } from "@/components/theme-provider";
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
@@ -18,6 +18,13 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   if (loading) return null;
   if (user?.email !== adminEmail) return <Navigate to="/" />;
   return <>{children}</>;
+};
+
+const AuthRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (user) return <Navigate to="/" />;
+  return <AuthPage />;
 };
 
 const queryClient = new QueryClient();
@@ -31,15 +38,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route 
-              path="/admin" 
+            <Route path="/auth" element={<AuthRoute />} />
+            <Route
+              path="/admin"
               element={
                 <AdminRoute>
                   <AdminDashboard />
                 </AdminRoute>
-              } 
+              }
             />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
@@ -47,6 +54,5 @@ const App = () => (
     </ThemeProvider>
   </QueryClientProvider>
 );
-
 
 export default App;
