@@ -72,9 +72,9 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
           <select value={form.urinaryKetones} onChange={e => setForm({ ...form, urinaryKetones: e.target.value as any })} className={selectClass}>
             <option value="none">None</option>
             <option value="trace">Trace</option>
-            <option value="small">Small</option>
-            <option value="moderate">Moderate</option>
-            <option value="large">Large</option>
+            <option value="small">1+</option>
+            <option value="moderate">2+</option>
+            <option value="large">3+</option>
           </select>
         </div>
         <div>

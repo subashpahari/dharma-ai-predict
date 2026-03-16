@@ -40,3 +40,18 @@
 .read-the-docs {
   color: #888;
 }
+
+.orbit {
+  transform-origin: 330px 300px; /* center of your main circle */
+  animation: rotate 8s linear infinite;
+}
+
+.orbit1 { animation-duration: 6s; }
+.orbit2 { animation-duration: 8s; }
+.orbit3 { animation-duration: 10s; }
+.orbit4 { animation-duration: 12s; }
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
