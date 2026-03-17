@@ -1,7 +1,13 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Activity, Loader2, Thermometer, Droplets, CircleDot } from 'lucide-react';
-import type { PredictionInput } from '@/lib/prediction';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Activity,
+  Loader2,
+  Thermometer,
+  Droplets,
+  CircleDot,
+} from "lucide-react";
+import type { PredictionInput } from "@/lib/prediction";
 
 interface PredictionFormProps {
   onSubmit: (input: PredictionInput) => void;
@@ -10,30 +16,33 @@ interface PredictionFormProps {
 
 // ✅ allow empty string for inputs
 type FormState = {
-  nausea: boolean;
-  lossOfAppetite: boolean;
-  peritonitis: 'none' | 'local' | 'generalized';
-  urinaryKetones: 'none' | 'trace' | 'small' | 'moderate' | 'large' | null;
+  nausea: boolean | null;
+  lossOfAppetite: boolean | null;
+  peritonitis: "none" | "local" | "generalized" | null;
+  urinaryKetones: "none" | "trace" | "small" | "moderate" | "large" | null;
   freeFluids: boolean | null;
-  wbcCount: number | '';
-  bodyTemperature: number | '';
-  neutrophilPercentage: number | '';
-  crp: number | '';
-  appendixDiameter: number | '';
+  wbcCount: string;
+  bodyTemperature: string;
+  neutrophilPercentage: string;
+  crp: string;
+  appendixDiameter: string;
 };
 
-export default function PredictionForm({ onSubmit, loading }: PredictionFormProps) {
+export default function PredictionForm({
+  onSubmit,
+  loading,
+}: PredictionFormProps) {
   const [form, setForm] = useState<FormState>({
-    nausea: false,
-    lossOfAppetite: false,
-    peritonitis: 'none',
+    nausea: null,
+    lossOfAppetite: null,
+    peritonitis: null,
     urinaryKetones: null,
     freeFluids: null,
-    wbcCount: 10,
-    bodyTemperature: 37,
-    neutrophilPercentage: 70,
-    crp: '',
-    appendixDiameter: '',
+    wbcCount: "",
+    bodyTemperature: "",
+    neutrophilPercentage: "",
+    crp: "",
+    appendixDiameter: "",
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -47,37 +56,43 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
     "text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block";
 
   const handleNumberChange = (key: keyof FormState, value: string) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      [key]: value === '' ? '' : Number(value)
+      [key]: value,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ required validation
     if (
-      form.bodyTemperature === '' ||
-      form.wbcCount === '' ||
-      form.neutrophilPercentage === ''
+      form.bodyTemperature === "" ||
+      form.wbcCount === "" ||
+      form.neutrophilPercentage === "" ||
+      form.nausea === null ||
+      form.lossOfAppetite === null ||
+      form.peritonitis === null
     ) {
       setError("Please fill all required fields");
       return;
     }
 
+    const temp = Number(form.bodyTemperature);
+    const wbc = Number(form.wbcCount);
+    const neutro = Number(form.neutrophilPercentage);
+
     // ✅ range validation
-    if (form.bodyTemperature < 35 || form.bodyTemperature > 42) {
+    if (temp < 35 || temp > 42) {
       setError("Temperature must be between 35–42°C");
       return;
     }
 
-    if (form.wbcCount <= 0) {
-      setError("WBC must be greater than 0");
+    if (wbc < 10 || wbc > 100) {
+      setError("WBC count must be between 10–100 (10³/µL)");
       return;
     }
 
-    if (form.neutrophilPercentage < 0 || form.neutrophilPercentage > 100) {
+    if (neutro < 0 || neutro > 100) {
       setError("Neutrophil % must be between 0–100");
       return;
     }
@@ -92,13 +107,15 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
       nausea: form.nausea ? 1 : 0,
       lossOfAppetite: form.lossOfAppetite ? 1 : 0,
       peritonitis: peritonitisMap[form.peritonitis],
-      urinaryKetones: form.urinaryKetones === null ? null : ketoneMap[form.urinaryKetones],
-      freeFluids: form.freeFluids === null ? null : (form.freeFluids ? 1 : 0),
+      urinaryKetones:
+        form.urinaryKetones === null ? null : ketoneMap[form.urinaryKetones],
+      freeFluids: form.freeFluids === null ? null : form.freeFluids ? 1 : 0,
       wbcCount: Number(form.wbcCount),
       bodyTemperature: Number(form.bodyTemperature),
       neutrophilPercentage: Number(form.neutrophilPercentage),
-      crp: form.crp === '' ? null : Number(form.crp),
-      appendixDiameter: form.appendixDiameter === '' ? null : Number(form.appendixDiameter),
+      crp: form.crp === "" ? null : Number(form.crp),
+      appendixDiameter:
+        form.appendixDiameter === "" ? null : Number(form.appendixDiameter),
     };
 
     console.log("🚀 FINAL DATA SENT TO BACKEND:", submissionInput);
@@ -124,12 +141,17 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Nausea *</label>
           <select
-            value={form.nausea ? 'yes' : 'no'}
+            value={form.nausea === null ? "null" : form.nausea ? "yes" : "no"}
             onChange={(e) =>
-              setForm({ ...form, nausea: e.target.value === 'yes' })
+              setForm({
+                ...form,
+                nausea:
+                  e.target.value === "null" ? null : e.target.value === "yes",
+              })
             }
             className={selectClass}
           >
+            <option value="null">Select Option</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>
@@ -138,12 +160,23 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Loss of Appetite *</label>
           <select
-            value={form.lossOfAppetite ? 'yes' : 'no'}
+            value={
+              form.lossOfAppetite === null
+                ? "null"
+                : form.lossOfAppetite
+                  ? "yes"
+                  : "no"
+            }
             onChange={(e) =>
-              setForm({ ...form, lossOfAppetite: e.target.value === 'yes' })
+              setForm({
+                ...form,
+                lossOfAppetite:
+                  e.target.value === "null" ? null : e.target.value === "yes",
+              })
             }
             className={selectClass}
           >
+            <option value="null">Select Option</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>
@@ -152,12 +185,17 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Peritonitis *</label>
           <select
-            value={form.peritonitis}
+            value={form.peritonitis || "null"}
             onChange={(e) =>
-              setForm({ ...form, peritonitis: e.target.value as any })
+              setForm({
+                ...form,
+                peritonitis:
+                  e.target.value === "null" ? null : (e.target.value as any),
+              })
             }
             className={selectClass}
           >
+            <option value="null">Select Option</option>
             <option value="none">None</option>
             <option value="local">Local</option>
             <option value="generalized">Generalized</option>
@@ -167,13 +205,17 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Urinary Ketones</label>
           <select
-            value={form.urinaryKetones || 'null'}
+            value={form.urinaryKetones || "null"}
             onChange={(e) =>
-              setForm({ ...form, urinaryKetones: e.target.value === 'null' ? null : e.target.value as any })
+              setForm({
+                ...form,
+                urinaryKetones:
+                  e.target.value === "null" ? null : (e.target.value as any),
+              })
             }
             className={selectClass}
           >
-            <option value="null">Not Checked / Unknown</option>
+            <option value="null">Select Option</option>
             <option value="none">None</option>
             <option value="trace">Trace</option>
             <option value="small">1+</option>
@@ -191,10 +233,13 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
             Temperature (°C) *
           </label>
           <input
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={form.bodyTemperature}
-            onChange={(e) => handleNumberChange('bodyTemperature', e.target.value)}
+            placeholder="37"
+            onChange={(e) =>
+              handleNumberChange("bodyTemperature", e.target.value)
+            }
             className={inputClass}
           />
         </div>
@@ -202,13 +247,14 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>
             <Droplets className="w-3 h-3 inline mr-1" />
-            WBC Count *
+            WBC Count (10³/µL) *
           </label>
           <input
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={form.wbcCount}
-            onChange={(e) => handleNumberChange('wbcCount', e.target.value)}
+            placeholder="20"
+            onChange={(e) => handleNumberChange("wbcCount", e.target.value)}
             className={inputClass}
           />
         </div>
@@ -219,10 +265,13 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
             Neutrophil (%) *
           </label>
           <input
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={form.neutrophilPercentage}
-            onChange={(e) => handleNumberChange('neutrophilPercentage', e.target.value)}
+            placeholder="70"
+            onChange={(e) =>
+              handleNumberChange("neutrophilPercentage", e.target.value)
+            }
             className={inputClass}
           />
         </div>
@@ -230,10 +279,11 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>CRP (mg/L)</label>
           <input
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={form.crp}
-            onChange={(e) => handleNumberChange('crp', e.target.value)}
+            placeholder="15"
+            onChange={(e) => handleNumberChange("crp", e.target.value)}
             className={inputClass}
           />
         </div>
@@ -241,16 +291,19 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Free Fluids</label>
           <select
-            value={form.freeFluids === null ? 'null' : (form.freeFluids ? 'yes' : 'no')}
+            value={
+              form.freeFluids === null ? "null" : form.freeFluids ? "yes" : "no"
+            }
             onChange={(e) =>
-              setForm({ 
-                ...form, 
-                freeFluids: e.target.value === 'null' ? null : (e.target.value === 'yes') 
+              setForm({
+                ...form,
+                freeFluids:
+                  e.target.value === "null" ? null : e.target.value === "yes",
               })
             }
             className={selectClass}
           >
-            <option value="null">Not Checked / Unknown</option>
+            <option value="null">Select Option</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>
@@ -259,10 +312,13 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div className="sm:col-span-1">
           <label className={labelClass}>Appendix Diameter (mm)</label>
           <input
-            type="number"
-            step="0.1"
+            type="text"
+            inputMode="decimal"
             value={form.appendixDiameter}
-            onChange={(e) => handleNumberChange('appendixDiameter', e.target.value)}
+            placeholder="6"
+            onChange={(e) =>
+              handleNumberChange("appendixDiameter", e.target.value)
+            }
             className={inputClass}
           />
         </div>
@@ -275,7 +331,11 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         disabled={loading}
         className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
       >
-        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Activity className="w-4 h-4" />}
+        {loading ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Activity className="w-4 h-4" />
+        )}
         Run Analysis
       </button>
     </motion.form>
