@@ -294,15 +294,15 @@ export default function Dashboard() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="glass-card p-6 border-coral/20 bg-coral/[0.02]"
+                    className="glass-card p-5 sm:p-6 border-coral/20 bg-coral/[0.02]"
                   >
-                    <div className="flex items-start justify-between gap-6">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-start justify-between gap-6">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
                           <Activity className="w-4 h-4 text-coral" />
                           <h4 className="text-[10px] font-bold uppercase tracking-widest text-coral">Clinical Summary</h4>
                         </div>
-                        <p className="text-base text-secondary-foreground leading-relaxed font-medium">
+                        <p className="text-base sm:text-lg text-secondary-foreground leading-relaxed font-medium">
                           The <strong className="text-foreground">Dharma Score</strong> is{' '}
                           <strong className="text-coral underline underline-offset-4 decoration-2">{result.dharmaScore}%</strong>,{' '}
                           indicating a <strong className="text-foreground">{result.resultStatus.toLowerCase()}</strong>.{' '}
@@ -311,7 +311,7 @@ export default function Dashboard() {
                       </div>
                       <button
                         onClick={handleDownloadPDF}
-                        className="flex items-center gap-2 px-5 py-3 bg-coral text-white rounded-xl text-xs font-bold shadow-xl shadow-coral/20 hover:scale-105 active:scale-95 transition-all shrink-0"
+                        className="flex items-center justify-center gap-2 px-6 py-4 sm:py-3 bg-coral text-white rounded-xl text-sm font-bold shadow-xl shadow-coral/20 hover:scale-[1.02] active:scale-95 transition-all shrink-0"
                       >
                         <Download className="w-4 h-4" />
                         Download PDF

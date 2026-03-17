@@ -47,13 +47,13 @@ export default function PredictionForm({
   const [error, setError] = useState<string | null>(null);
 
   const selectClass =
-    "w-full py-2.5 px-3 bg-secondary border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary appearance-none";
+    "w-full py-3 px-4 bg-secondary border border-border rounded-xl text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none";
 
   const inputClass =
-    "w-full py-2.5 px-3 bg-secondary border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary";
+    "w-full py-3 px-4 bg-secondary border border-border rounded-xl text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all";
 
   const labelClass =
-    "text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block";
+    "text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-2 block ml-1";
 
   const handleNumberChange = (key: keyof FormState, value: string) => {
     setForm((prev) => ({

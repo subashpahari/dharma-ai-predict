@@ -31,7 +31,7 @@ const OrbitAnimation: React.FC = () => {
       {/* Background glow */}
       <div className="absolute inset-0 bg-[#FF7F50]/10 blur-[100px] rounded-full" />
 
-      <svg width="555" height="555" viewBox="0 0 420 420">
+      <svg className="w-full h-auto max-w-[555px] mx-auto" viewBox="0 0 420 420">
         <style>{`
           .ecg{
             fill:none;

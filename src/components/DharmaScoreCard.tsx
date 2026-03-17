@@ -19,11 +19,11 @@ export default function DharmaScoreCard({ result, mode = 'all' }: Props) {
   const bgGlow = isHigh ? 'shadow-[0_0_40px_-10px_hsl(0,65%,58%,0.2)]' : isMedium ? 'shadow-[0_0_40px_-10px_hsl(36,77%,65%,0.2)]' : 'shadow-[0_0_40px_-10px_hsl(142,60%,45%,0.2)]';
 
   const ScoreView = (
-    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-      <div className={`w-28 h-28 rounded-full border-4 ${ringColor} flex items-center justify-center flex-shrink-0 bg-card shadow-inner`}>
+    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+      <div className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 ${ringColor} flex items-center justify-center flex-shrink-0 bg-card shadow-inner`}>
         <div className="text-center">
-          <span className={`text-4xl font-display font-bold ${scoreColor}`}>{dharmaScore}</span>
-          <span className={`block text-[10px] uppercase tracking-tighter ${scoreColor} opacity-70 font-bold`}>Score</span>
+          <span className={`text-3xl sm:text-4xl font-display font-bold ${scoreColor}`}>{dharmaScore}</span>
+          <span className={`block text-[9px] sm:text-[10px] uppercase tracking-tighter ${scoreColor} opacity-70 font-bold`}>Score</span>
         </div>
       </div>
 
