@@ -126,17 +126,17 @@ export default function LandingPage() {
               clinical data, including common scenarios such as
               non-visualization of the appendix on ultrasound.
             </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => navigate("/app")}
-                className="w-full sm:w-auto justify-center px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-xl shadow-primary/10"
+                className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-xl shadow-primary/10"
               >
                 Run Analysis <ArrowRight className="w-5 h-5" />
               </button>
               <a
                 href="https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0000908"
                 target="_blank"
-                className="w-full sm:w-auto justify-center px-6 sm:px-8 py-3 sm:py-4 bg-secondary border border-border rounded-2xl font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all"
+                className="px-8 py-4 bg-secondary border border-border rounded-2xl font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all"
               >
                 Evidence <ExternalLink className="w-4 h-4" />
               </a>
@@ -221,7 +221,7 @@ export default function LandingPage() {
             </div>
 
             <div className="relative group p-1 bg-gradient-to-br from-coral/20 via-primary/10 to-transparent rounded-[2rem]">
-              <div className="bg-background rounded-[1.9rem] p-6 sm:p-8 space-y-6 sm:space-y-8 relative overflow-hidden">
+              <div className="bg-background rounded-[1.9rem] p-8 space-y-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5">
                   <Activity className="w-48 h-48" />
                 </div>
@@ -287,7 +287,7 @@ export default function LandingPage() {
             <a
               href="https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0000908"
               target="_blank"
-              className="group w-full sm:w-auto justify-center flex items-center gap-3 px-6 sm:px-8 py-4 sm:py-5 bg-coral rounded-2xl font-display font-bold text-white hover:scale-105 transition-all shadow-2xl shadow-coral/40"
+              className="group flex items-center gap-3 px-8 py-5 bg-coral rounded-2xl font-display font-bold text-white hover:scale-105 transition-all shadow-2xl shadow-coral/40"
             >
               Access Publication{" "}
               <ChevronRight className="group-hover:translate-x-1 transition-transform" />
@@ -298,7 +298,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-border">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+        <div className="max-w-7xl mx-auto flex flex-col md:row items-center justify-between gap-8 text-center md:text-left">
           <div className="space-y-2">
             <div className="flex items-center gap-2 justify-center md:justify-start">
               <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center flex-shrink-0">
