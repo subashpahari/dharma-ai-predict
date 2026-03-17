@@ -28,6 +28,14 @@ origins = [
     "https://dharma-ai.org",  
 ]
 
+# Add production frontend URL from environment variable if it exists
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
+    # Also add version without trailing slash if present
+    if frontend_url.endswith("/"):
+        origins.append(frontend_url[:-1])
+
 
 app.add_middleware(
     CORSMiddleware,
