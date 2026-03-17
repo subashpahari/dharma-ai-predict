@@ -21,17 +21,19 @@ const OrbitAnimation: React.FC = () => {
     return () => mediaQuery.removeEventListener("change", updateTheme);
   }, [theme]);
 
+
   return (
+   
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 0.8, scale: 1 }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className="relative"
+      className="relative "
     >
       {/* Background glow */}
-      <div className="absolute inset-0 bg-[#FF7F50]/10 blur-[100px] rounded-full" />
+      <div className="absolute too-0 left-0 bg-[#FF7F50]/10 blur-[100px] rounded-full" />
 
-      <svg width="555" height="555" viewBox="0 0 420 420">
+      <svg className="w-[420px] h-[420px] lg:w-[550px] lg:h-[550px] " viewBox="0 0 420 420">
         <style>{`
           .ecg{
             fill:none;
@@ -90,6 +92,7 @@ const OrbitAnimation: React.FC = () => {
         </circle>
       </svg>
     </motion.div>
+   
   );
 };
 
