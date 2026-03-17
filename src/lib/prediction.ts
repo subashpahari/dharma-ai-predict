@@ -1,14 +1,14 @@
 export interface PredictionInput {
-  nausea: boolean;
-  lossOfAppetite: boolean;
-  peritonitis: 'none' | 'local' | 'generalized';
-  urinaryKetones: 'none' | 'trace' | 'small' | 'moderate' | 'large';
-  freeFluids: boolean;
+  nausea: number;
+  lossOfAppetite: number;
+  peritonitis: number;
+  urinaryKetones: number;
+  freeFluids: number | null;
   wbcCount: number;
   bodyTemperature: number;
   neutrophilPercentage: number;
-  crp: number;
-  appendixDiameter: number;
+  crp?: number | null;
+  appendixDiameter?: number | null;
 }
 
 export interface ShapValue {
@@ -37,20 +37,17 @@ export interface PredictionResult {
 const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 export async function calculatePrediction(input: PredictionInput): Promise<PredictionResult> {
-  const peritonitisMap = { none: 0, local: 1, generalized: 2 };
-  const ketoneMap = { none: 0, trace: 0, small: 1, moderate: 2, large: 3 };
-
   const formData = {
-    Nausea: input.nausea ? 1 : 0,
-    Loss_of_Appetite: input.lossOfAppetite ? 1 : 0,
-    Peritonitis: peritonitisMap[input.peritonitis],
+    Nausea: input.nausea,
+    Loss_of_Appetite: input.lossOfAppetite,
+    Peritonitis: input.peritonitis,
     WBC_Count: input.wbcCount,
     Body_Temperature: input.bodyTemperature,
     Neutrophil_Percentage: input.neutrophilPercentage,
     CRP: input.crp,
-    Ketones_in_Urine: ketoneMap[input.urinaryKetones],
+    Ketones_in_Urine: input.urinaryKetones,
     Appendix_Diameter: input.appendixDiameter,
-    Free_Fluids: input.freeFluids ? 1 : 0,
+    Free_Fluids: input.freeFluids,
   };
 
   try {

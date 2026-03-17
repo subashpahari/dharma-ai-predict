@@ -72,6 +72,7 @@ async def predict(data: PatientData):
     try:
         # Convert input into DataFrame
         input_dict = data.dict()
+        print("Received Data:", data.dict())
         
         # Explicitly calculate the flag based on Appendix_Diameter presence
         input_dict['Appendix_Diameter_flag'] = 1 if input_dict.get('Appendix_Diameter') is not None else 0
