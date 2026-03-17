@@ -13,7 +13,7 @@ type FormState = {
   nausea: boolean;
   lossOfAppetite: boolean;
   peritonitis: 'none' | 'local' | 'generalized';
-  urinaryKetones: 'none' | 'trace' | 'small' | 'moderate' | 'large';
+  urinaryKetones: 'none' | 'trace' | 'small' | 'moderate' | 'large' | null;
   freeFluids: boolean | null;
   wbcCount: number | '';
   bodyTemperature: number | '';
@@ -27,13 +27,13 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
     nausea: false,
     lossOfAppetite: false,
     peritonitis: 'none',
-    urinaryKetones: 'none',
-    freeFluids: false,
+    urinaryKetones: null,
+    freeFluids: null,
     wbcCount: 10,
     bodyTemperature: 37,
     neutrophilPercentage: 70,
-    crp: 15,
-    appendixDiameter: 6,
+    crp: '',
+    appendixDiameter: '',
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -92,7 +92,7 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
       nausea: form.nausea ? 1 : 0,
       lossOfAppetite: form.lossOfAppetite ? 1 : 0,
       peritonitis: peritonitisMap[form.peritonitis],
-      urinaryKetones: ketoneMap[form.urinaryKetones],
+      urinaryKetones: form.urinaryKetones === null ? null : ketoneMap[form.urinaryKetones],
       freeFluids: form.freeFluids === null ? null : (form.freeFluids ? 1 : 0),
       wbcCount: Number(form.wbcCount),
       bodyTemperature: Number(form.bodyTemperature),
@@ -167,12 +167,13 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Urinary Ketones</label>
           <select
-            value={form.urinaryKetones}
+            value={form.urinaryKetones || 'null'}
             onChange={(e) =>
-              setForm({ ...form, urinaryKetones: e.target.value as any })
+              setForm({ ...form, urinaryKetones: e.target.value === 'null' ? null : e.target.value as any })
             }
             className={selectClass}
           >
+            <option value="null">Not Checked / Unknown</option>
             <option value="none">None</option>
             <option value="trace">Trace</option>
             <option value="small">1+</option>
@@ -240,12 +241,16 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         <div>
           <label className={labelClass}>Free Fluids</label>
           <select
-            value={form.freeFluids ? 'yes' : 'no'}
+            value={form.freeFluids === null ? 'null' : (form.freeFluids ? 'yes' : 'no')}
             onChange={(e) =>
-              setForm({ ...form, freeFluids: e.target.value === 'yes' })
+              setForm({ 
+                ...form, 
+                freeFluids: e.target.value === 'null' ? null : (e.target.value === 'yes') 
+              })
             }
             className={selectClass}
           >
+            <option value="null">Not Checked / Unknown</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
           </select>

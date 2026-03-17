@@ -2,7 +2,7 @@ export interface PredictionInput {
   nausea: number;
   lossOfAppetite: number;
   peritonitis: number;
-  urinaryKetones: number;
+  urinaryKetones: number | null;
   freeFluids: number | null;
   wbcCount: number;
   bodyTemperature: number;

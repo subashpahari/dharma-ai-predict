@@ -378,7 +378,7 @@ export default function Dashboard() {
                        <DataPoint label="CRP" value={lastInput.crp?.toString() || "N/A"} />
                        <DataPoint label="Diameter" value={`${lastInput.appendixDiameter || 0}mm`} highlight={(lastInput.appendixDiameter || 0) > 6} />
                        <DataPoint label="Free Fluids" value={lastInput.freeFluids === 1 ? "Present" : lastInput.freeFluids === 0 ? "None" : "N/A"} highlight={lastInput.freeFluids === 1} />
-                       <DataPoint label="Urinary Ketones" value={["None", "Trace", "1+", "2+", "3+"][lastInput.urinaryKetones] || "Unknown"} highlight={lastInput.urinaryKetones !== 0} />
+                       <DataPoint label="Urinary Ketones" value={lastInput.urinaryKetones !== null ? (["None", "Trace", "1+", "2+", "3+"][lastInput.urinaryKetones] || "Unknown") : "N/A"} highlight={lastInput.urinaryKetones !== null && lastInput.urinaryKetones !== 0} />
                     </div>
                   </motion.div>
                 )}
