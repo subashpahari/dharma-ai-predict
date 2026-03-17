@@ -34,7 +34,7 @@ export interface PredictionResult {
   };
 }
 
-const BACKEND_URL = 'http://127.0.0.1:8000';
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 export async function calculatePrediction(input: PredictionInput): Promise<PredictionResult> {
   const peritonitisMap = { none: 0, local: 1, generalized: 2 };
