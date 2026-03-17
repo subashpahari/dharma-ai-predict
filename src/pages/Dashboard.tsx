@@ -113,11 +113,11 @@ export default function Dashboard() {
     setShowForm(false);
     
     const input: PredictionInput = {
-      nausea: report.nausea,
-      lossOfAppetite: report.loss_of_appetite,
-      peritonitis: report.peritonitis as any,
-      urinaryKetones: report.urinary_ketones as any,
-      freeFluids: report.free_fluids,
+      nausea: report.nausea ? 1 : 0,
+      lossOfAppetite: report.loss_of_appetite ? 1 : 0,
+      peritonitis: Number(report.peritonitis),
+      urinaryKetones: Number(report.urinary_ketones),
+      freeFluids: report.free_fluids === null ? null : (report.free_fluids ? 1 : 0),
       wbcCount: report.wbc_count,
       bodyTemperature: report.body_temperature,
       neutrophilPercentage: report.neutrophil_percentage,
@@ -369,16 +369,16 @@ export default function Dashboard() {
                       <h4 className="text-[10px] font-bold uppercase tracking-widest text-foreground">Detailed Clinical Evidence Submitted</h4>
                     </div>
                     <div className="p-4 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-y-4 gap-x-2">
-                       <DataPoint label="Nausea" value={lastInput.nausea ? "Positive" : "Negative"} highlight={lastInput.nausea} />
-                       <DataPoint label="Loss of Appetite" value={lastInput.lossOfAppetite ? "Positive" : "Negative"} highlight={lastInput.lossOfAppetite} />
-                       <DataPoint label="Peritonitis" value={lastInput.peritonitis} highlight={lastInput.peritonitis !== 'none'} />
+                       <DataPoint label="Nausea" value={lastInput.nausea === 1 ? "Positive" : "Negative"} highlight={lastInput.nausea === 1} />
+                       <DataPoint label="Loss of Appetite" value={lastInput.lossOfAppetite === 1 ? "Positive" : "Negative"} highlight={lastInput.lossOfAppetite === 1} />
+                       <DataPoint label="Peritonitis" value={["None", "Local", "Generalized"][lastInput.peritonitis] || "Unknown"} highlight={lastInput.peritonitis !== 0} />
                        <DataPoint label="WBC" value={lastInput.wbcCount.toString()} />
                        <DataPoint label="Temp" value={`${lastInput.bodyTemperature}°C`} />
                        <DataPoint label="Neutrophil" value={`${lastInput.neutrophilPercentage}%`} />
-                       <DataPoint label="CRP" value={lastInput.crp.toString()} />
-                       <DataPoint label="Diameter" value={`${lastInput.appendixDiameter}mm`} highlight={lastInput.appendixDiameter > 6} />
-                       <DataPoint label="Free Fluids" value={lastInput.freeFluids ? "Present" : "None"} highlight={lastInput.freeFluids} />
-                       <DataPoint label="Urinary Ketones" value={lastInput.urinaryKetones} highlight={lastInput.urinaryKetones !== 'none'} />
+                       <DataPoint label="CRP" value={lastInput.crp?.toString() || "N/A"} />
+                       <DataPoint label="Diameter" value={`${lastInput.appendixDiameter || 0}mm`} highlight={(lastInput.appendixDiameter || 0) > 6} />
+                       <DataPoint label="Free Fluids" value={lastInput.freeFluids === 1 ? "Present" : lastInput.freeFluids === 0 ? "None" : "N/A"} highlight={lastInput.freeFluids === 1} />
+                       <DataPoint label="Urinary Ketones" value={lastInput.urinaryKetones !== null ? (["None", "Trace", "1+", "2+", "3+"][lastInput.urinaryKetones] || "Unknown") : "N/A"} highlight={lastInput.urinaryKetones !== null && lastInput.urinaryKetones !== 0} />
                     </div>
                   </motion.div>
                 )}
