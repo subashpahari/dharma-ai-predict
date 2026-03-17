@@ -134,7 +134,7 @@ export default function LandingPage() {
                 Run Analysis <ArrowRight className="w-5 h-5" />
               </button>
               <a
-                href="https://doi.org/10.1101/2025.05.27.25328468"
+                href="https://journals.plos.org/digitalhealth/article?id=10.1371/journal.pdig.0000908"
                 target="_blank"
                 className="px-8 py-4 bg-secondary border border-border rounded-2xl font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all"
               >

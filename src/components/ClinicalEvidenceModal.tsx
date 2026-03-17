@@ -36,8 +36,9 @@ export default function ClinicalEvidenceModal({ open, onClose }: Props) {
 
             <div className="space-y-4 text-sm text-secondary-foreground">
               <p>
-                The DharmaAI Appendicitis Prediction System is based on a machine learning model trained on clinical data 
-                to predict the probability of acute appendicitis using readily available clinical and laboratory parameters.
+                The Dharma framework is built by integrating clinical reasoning into every step of its system design. 
+  It is intended to support healthcare professionals in the assessment of acute abdomen, specifically 
+  for pediatric appendicitis, aligning seamlessly with existing clinical workflows.
               </p>
               <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                 <p className="font-medium text-foreground mb-1">Reference Publication</p>
@@ -54,11 +55,27 @@ export default function ClinicalEvidenceModal({ open, onClose }: Props) {
                   doi: 10.1371/journal.pdig.0000908
                 </a>
               </div>
-              <p>
-                The model utilizes SHAP (SHapley Additive exPlanations) values to provide transparent, 
-                interpretable predictions — enabling clinicians to understand which features most influenced 
-                the prediction outcome.
-              </p>
+             <p>
+  <strong>Performance Metrics:</strong><br />
+  <em>Diagnostic Performance (cross-validation)</em><br />
+  AUC-ROC: 0.93–0.99<br />
+  Sensitivity: 90%–95%<br />
+  Specificity: 90%–96%<br />
+  Positive Predictive Value (PPV): 93%–97%<br />
+  Negative Predictive Value (NPV): 87%–94%<br /><br />
+
+  <em>Severity Assessment (cross-validation)</em><br />
+  AUC-ROC: 0.97–0.99<br />
+  Sensitivity: 93%–99%<br />
+  Specificity: 53%–75%<br />
+  PPV: 59%–72%<br />
+  NPV: 94%–99%<br /><br />
+
+  <em>If appendix not visualized or USG unavailable (n=144 test cohort)</em><br />
+  AUC-ROC: 0.93–0.99<br />
+  Threshold ≥44% (High Likelihood): Specificity 93%–100%, PPV 84%–100%<br />
+  Threshold 25% (Low Likelihood):  Sensitivity 84%–98%, NPV 91%–99%
+</p>
               <p className="text-xs text-muted-foreground italic">
                 Disclaimer: This tool is intended for clinical decision support only and should not replace 
                 professional medical judgment or established clinical protocols.

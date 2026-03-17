@@ -117,7 +117,7 @@ export default function PredictionForm({ onSubmit, loading }: PredictionFormProp
         className="w-full py-3 bg-primary text-primary-foreground rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50 glow-primary"
       >
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Activity className="w-4 h-4" />}
-        Run Prediction
+        Run Analysis
       </button>
     </motion.form>
   );
