@@ -8,16 +8,16 @@ def interpret (flag, upper_ci, lower_ci, task):
 
         if flag == 0:
             if lower_ci >= 0.5:
-                if lower_ci - 0.5 < 0.01:
+                if lower_ci - 0.5 < 0.1:
                     result = "High likelihood of acute appendicitis."
-                    note = "Close to threshold, further evaluation is recommended."
+                    note = "Management in line with acute appendicitis is recommended."
                 else:
                     result = "Very high likelihood of acute appendicitis."
                     note = "Management in line with acute appendicitis is recommended."
             elif upper_ci <= 0.5:
-                if 0.5 - upper_ci < 0.01:
+                if 0.5 - upper_ci < 0.1:
                     result = "Low likelihood of acute appendicitis."
-                    note = "Close to threshold, further evaluation is recommended."
+                    note = "Further evaluation is recommended."
                 else:
                     result = "Very low likelihood of acute appendicitis."
                     note = "Exploration of alternative diagnoses is recommended."
@@ -27,16 +27,16 @@ def interpret (flag, upper_ci, lower_ci, task):
 
         else:
             if lower_ci >= 0.44:
-                if lower_ci - 0.44 < 0.01:
+                if lower_ci - 0.44 < 0.1:
                     result = "High likelihood of acute appendicitis."
-                    note = "Close to threshold, further evaluation is recommended."
+                    note = "Imaging studies are recommended for further evaluation."
                 else:
                     result = "Very high likelihood of acute appendicitis."
                     note = "Management in line with acute appendicitis is recommended."
             elif upper_ci <= 0.25:
-                if 0.25 - upper_ci < 0.01:
+                if 0.25 - upper_ci < 0.05:
                     result = "Low likelihood of acute appendicitis."
-                    note = "Close to threshold, further evaluation is recommended."
+                    note = "Further evaluation is recommended."
                 else:
                         result = "Very low likelihood of acute appendicitis."
                         note = "Exploration of alternative diagnoses is recommended."
