@@ -36,8 +36,8 @@ const ToolButton = ({ icon: Icon, label, onClick, disabled, badge, variant }: { 
 
 export default function RightSidebar({ onDownloadPDF, onClinicalEvidence, onCreatorInfo, onSignOut, userEmail, hasResult }: RightSidebarProps) {
   const navigate = useNavigate();
-  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-  const isAdmin = userEmail === adminEmail;
+  const adminEmails = (import.meta.env.VITE_ADMIN_EMAIL || "").split(",").map((e: string) => e.trim());
+  const isAdmin = userEmail ? adminEmails.includes(userEmail) : false;
 
   return (
     <div className="w-full h-full flex flex-col bg-sidebar">

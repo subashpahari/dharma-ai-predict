@@ -23,10 +23,10 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+  const adminEmails = (import.meta.env.VITE_ADMIN_EMAIL || "").split(",").map((e: string) => e.trim());
 
   if (loading) return null;
-  if (user?.email !== adminEmail) return <Navigate to="/" />;
+  if (!user || !adminEmails.includes(user.email || "")) return <Navigate to="/" />;
   return <>{children}</>;
 };
 
