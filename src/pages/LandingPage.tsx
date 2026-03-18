@@ -17,7 +17,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 
 import { useAuth } from "@/hooks/useAuth";
 import OrbitAnimation from "@/components/SvgOrbit";
-
+import Footer from "@/components/landing/Footer";
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -295,9 +295,10 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      <Footer/>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border">
+      {/* <footer className="py-12 px-6 border-t border-border">
         <div className="max-w-7xl mx-auto flex flex-col md:row items-center justify-between gap-8 text-center md:text-left">
           <div className="space-y-2">
             <div className="flex items-center gap-2 justify-center md:justify-start">
@@ -336,7 +337,7 @@ export default function LandingPage() {
             </a>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }

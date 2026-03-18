@@ -1,4 +1,4 @@
-import { Brain, Github, Mail } from 'lucide-react';
+import { Github, Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -6,8 +6,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Brain className="w-4 h-4 text-primary" />
+            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center flex-shrink-0">
+              <img
+                src="/images/logo.png"
+                alt="Dharma Logo"
+                className="w-7 h-7 object-contain"
+              />
             </div>
             <span className="font-display font-semibold text-gradient">DharmaAI</span>
           </div>
@@ -37,7 +41,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-6 border-t border-border/30 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} DharmaAI — Dr. Anup Thapa & Team. All rights reserved.
+          ©️ {new Date().getFullYear()} DharmaAI — All rights reserved.
         </div>
       </div>
     </footer>

@@ -1,5 +1,3 @@
-
-
 function Footer() {
   return (
       <footer className="py-12 px-6 border-t border-border">
@@ -16,7 +14,7 @@ function Footer() {
               <span className="font-display font-bold text-lg">Dharma AI</span>
             </div>
             <p className="text-xs text-muted-foreground  tracking-widest font-medium">
-              © 2026 Dharma-AI.org
+              ©️ 2026 Dharma-AI.org
             </p>
           </div>
 
