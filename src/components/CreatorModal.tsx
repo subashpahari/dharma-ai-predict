@@ -42,7 +42,7 @@ export default function CreatorModal({ open, onClose }: Props) {
             <div className="text-center space-y-4">
               <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto flex items-center justify-center">
                 <img
-                  src="/public/images/anup.jpeg"
+                  src="/images/anup.jpeg"
                   alt="Dr. Anup Thapa Kshetri"
                   className="w-full h-full object-cover"
                 />{" "}
