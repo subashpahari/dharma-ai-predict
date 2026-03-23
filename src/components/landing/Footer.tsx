@@ -24,13 +24,13 @@ export default function Footer() {
 
           <div className="flex items-center gap-4">
             <a
-              href="mailto:contact@dharmaai.com"
+              href="mailto:anup.thapa@dharma-ai.org"
               className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
             >
               <Mail className="w-4 h-4" />
             </a>
             <a
-              href="https://github.com"
+              href="https://github.com/ajung17/Dharma-AppendicitisModel"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
