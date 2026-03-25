@@ -1,49 +1,53 @@
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from dotenv import load_dotenv
+load_dotenv("../.env")
+
+import os
 import joblib
 import pandas as pd
 import numpy as np
 from typing import Optional
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from utils.helper import shap_explanation, CI95
 from utils.notes import interpret
 from sklearn.model_selection import train_test_split
-import os
+
+from routers import users, reports
+from database import engine
+import models
+
+# Initialize Db
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="DharmaAPI")
 
 
-# CORS settings
-origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "https://dharma-ai.org",  
-]
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,https://dharma-ai.org,http://127.0.0.1:5173")
+origins = [origin.strip() for origin in allowed_origins_env.split(",")]
+if "*" in origins:
+    origins = ["*"]
+print(f"Allowed Origins: {origins}")
 
-# Add production frontend URL from environment variable if it exists
-frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url:
-    origins.append(frontend_url)
-    # Also add version without trailing slash if present
-    if frontend_url.endswith("/"):
-        origins.append(frontend_url[:-1])
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    origin = request.headers.get("origin")
+    print(f"Request: {request.method} {request.url.path} | Origin: {origin}")
+    response = await call_next(request)
+    print(f"Response: {response.status_code}")
+    return response
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(users.router)
+app.include_router(reports.router)
 
 # Input schema
 class PatientData(BaseModel):
@@ -66,6 +70,10 @@ model_comp = joblib.load(os.path.join(BASE_DIR, "models/dharma_comp.joblib"))
 imputer = joblib.load(os.path.join(BASE_DIR, "models/imputer_model.joblib"))
 
 
+
+@app.options("/predict")
+async def predict_options():
+    return {}
 
 @app.post("/predict")
 async def predict(data: PatientData):

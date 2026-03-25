@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 import type { Report } from '@/hooks/useReports';
 
 export interface AdminReport extends Report {
@@ -13,39 +13,14 @@ export function useAdmin() {
 
   const fetchAllReports = useCallback(async () => {
     setLoading(true);
-    
-    // 1. Fetch all profiles (User Directory)
-    const { data: profiles, error: pError } = await supabase
-      .from('profiles')
-      .select('user_id, email');
-
-    // 2. Fetch all reports
-    const { data: allReports, error: rError } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (pError || rError) {
-      console.error('Data fetch error:', pError || rError);
-      // Fallback: If profiles fails, still show reports with IDs
-      if (allReports) {
-        setReports(allReports as AdminReport[]);
-      }
-    } else {
-      // 3. Map reports to include emails from profiles
-      const emailMap = (profiles || []).reduce((acc, p) => {
-        acc[p.user_id] = p.email;
-        return acc;
-      }, {} as Record<string, string>);
-
-      const formattedReports = (allReports || []).map(report => ({
-        ...report,
-        user_email: emailMap[report.user_id] || report.user_id
-      }));
-
-      setReports(formattedReports as AdminReport[]);
+    try {
+      const data = await api.get('/reports/admin');
+      setReports(data || []);
+    } catch (e) {
+      console.error('Failed to fetch admin reports', e);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 import type { PredictionInput, PredictionResult } from '@/lib/prediction';
 
 export interface Report {
@@ -34,13 +34,14 @@ export function useReports(userId: string | undefined) {
   const fetchReports = useCallback(async () => {
     if (!userId) return;
     setLoading(true);
-    const { data } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    setReports((data as Report[]) || []);
-    setLoading(false);
+    try {
+      const data = await api.get('/reports/');
+      setReports(data || []);
+    } catch (e) {
+      console.error('Failed to fetch reports', e);
+    } finally {
+      setLoading(false);
+    }
   }, [userId]);
 
   useEffect(() => {
@@ -49,30 +50,33 @@ export function useReports(userId: string | undefined) {
 
   const saveReport = async (input: PredictionInput, result: PredictionResult) => {
     if (!userId) return;
-    await supabase.from('reports').insert({
-      user_id: userId,
-      nausea: input.nausea,
-      loss_of_appetite: input.lossOfAppetite,
-      peritonitis: input.peritonitis,
-      urinary_ketones: input.urinaryKetones,
-      free_fluids: input.freeFluids,
-      wbc_count: input.wbcCount,
-      body_temperature: input.bodyTemperature,
-      neutrophil_percentage: input.neutrophilPercentage,
-      crp: input.crp,
-      appendix_diameter: input.appendixDiameter,
-      dharma_score: result.dharmaScore,
-      confidence_low: result.confidenceLow,
-      confidence_high: result.confidenceHigh,
-      result_status: result.resultStatus,
-      clinical_note: result.clinicalNote,
-      complication_score: result.complication?.probability,
-      complication_status: result.complication?.result,
-      complication_low: result.complication?.confidenceLow,
-      complication_high: result.complication?.confidenceHigh,
-      complication_note: result.complication?.note,
-    });
-    fetchReports();
+    try {
+      await api.post('/reports/', {
+        nausea: input.nausea,
+        loss_of_appetite: input.lossOfAppetite,
+        peritonitis: input.peritonitis,
+        urinary_ketones: input.urinaryKetones,
+        free_fluids: input.freeFluids,
+        wbc_count: input.wbcCount,
+        body_temperature: input.bodyTemperature,
+        neutrophil_percentage: input.neutrophilPercentage,
+        crp: input.crp,
+        appendix_diameter: input.appendixDiameter,
+        dharma_score: result.dharmaScore,
+        confidence_low: result.confidenceLow,
+        confidence_high: result.confidenceHigh,
+        result_status: result.resultStatus,
+        clinical_note: result.clinicalNote,
+        complication_score: result.complication?.probability,
+        complication_status: result.complication?.result,
+        complication_low: result.complication?.confidenceLow,
+        complication_high: result.complication?.confidenceHigh,
+        complication_note: result.complication?.note,
+      });
+      fetchReports();
+    } catch (e) {
+      console.error('Failed to save report', e);
+    }
   };
 
 
