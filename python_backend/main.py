@@ -71,11 +71,11 @@ imputer = joblib.load(os.path.join(BASE_DIR, "models/imputer_model.joblib"))
 
 
 
-@app.options("/predict")
+@app.options("/api/predict")
 async def predict_options():
     return {}
 
-@app.post("/predict")
+@app.post("/api/predict")
 async def predict(data: PatientData):
     try:
         # Convert input into DataFrame
