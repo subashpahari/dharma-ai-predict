@@ -30,7 +30,7 @@ class ReportCreate(BaseModel):
     nausea: int
     loss_of_appetite: int
     peritonitis: int
-    urinary_ketones: int
+    urinary_ketones: Optional[int] = None
     free_fluids: Optional[int] = None
     wbc_count: float
     body_temperature: float
@@ -57,14 +57,14 @@ class ReportOut(BaseModel):
     
     nausea: bool
     loss_of_appetite: bool
-    peritonitis: str
-    urinary_ketones: str
-    free_fluids: bool
+    peritonitis: Optional[str] = None
+    urinary_ketones: Optional[str] = None
+    free_fluids: Optional[bool] = None
     wbc_count: float
     body_temperature: float
     neutrophil_percentage: float
-    crp: float
-    appendix_diameter: float
+    crp: Optional[float] = None
+    appendix_diameter: Optional[float] = None
     
     dharma_score: float
     confidence_low: float

@@ -20,6 +20,19 @@ import models
 # Initialize Db
 models.Base.metadata.create_all(bind=engine)
 
+# Use database-level ALTERs to make fields optional if they were already created
+try:
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        conn.execute(text("ALTER TABLE reports ALTER COLUMN crp DROP NOT NULL;"))
+        conn.execute(text("ALTER TABLE reports ALTER COLUMN appendix_diameter DROP NOT NULL;"))
+        conn.execute(text("ALTER TABLE reports ALTER COLUMN free_fluids DROP NOT NULL;"))
+        conn.execute(text("ALTER TABLE reports ALTER COLUMN urinary_ketones DROP NOT NULL;"))
+        conn.execute(text("ALTER TABLE reports ALTER COLUMN peritonitis DROP NOT NULL;"))
+        conn.commit()
+except Exception as e:
+    print(f"Db migration skip or error: {e}")
+
 app = FastAPI(title="DharmaAPI")
 
 
