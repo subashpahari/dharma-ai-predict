@@ -94,14 +94,14 @@ export function ClinicalDetail({ selectedReport }: ClinicalDetailProps) {
         <div className="p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           <DataPoint label="Nausea" value={selectedReport.nausea ? "Positive" : "Negative"} highlight={selectedReport.nausea} />
           <DataPoint label="Loss of Appetite" value={selectedReport.loss_of_appetite ? "Positive" : "Negative"} highlight={selectedReport.loss_of_appetite} />
-          <DataPoint label="Peritonitis" value={selectedReport.peritonitis} highlight={selectedReport.peritonitis !== 'none'} />
-          <DataPoint label="WBC Count" value={selectedReport.wbc_count.toString()} />
-          <DataPoint label="Temperature" value={`${selectedReport.body_temperature}°C`} />
-          <DataPoint label="Neutrophil" value={`${selectedReport.neutrophil_percentage}%`} />
-          <DataPoint label="CRP" value={selectedReport.crp.toString()} />
-          <DataPoint label="Diameter" value={`${selectedReport.appendix_diameter}mm`} highlight={selectedReport.appendix_diameter > 6} />
+          <DataPoint label="Peritonitis" value={selectedReport.peritonitis || 'None'} highlight={selectedReport.peritonitis !== 'none' && !!selectedReport.peritonitis} />
+          <DataPoint label="WBC Count" value={selectedReport.wbc_count?.toString() || 'N/A'} />
+          <DataPoint label="Temperature" value={selectedReport.body_temperature ? `${selectedReport.body_temperature}°C` : 'N/A'} />
+          <DataPoint label="Neutrophil" value={selectedReport.neutrophil_percentage ? `${selectedReport.neutrophil_percentage}%` : 'N/A'} />
+          <DataPoint label="CRP" value={selectedReport.crp?.toString() || 'N/A'} />
+          <DataPoint label="Diameter" value={selectedReport.appendix_diameter ? `${selectedReport.appendix_diameter}mm` : 'N/A'} highlight={(selectedReport.appendix_diameter || 0) > 6} />
           <DataPoint label="Free Fluids" value={selectedReport.free_fluids ? "Present" : "None"} highlight={selectedReport.free_fluids} />
-          <DataPoint label="Urinary Ketones" value={selectedReport.urinary_ketones} highlight={selectedReport.urinary_ketones !== 'none'} />
+          <DataPoint label="Urinary Ketones" value={selectedReport.urinary_ketones || 'None'} highlight={selectedReport.urinary_ketones !== 'none' && !!selectedReport.urinary_ketones} />
         </div>
       </div>
 
