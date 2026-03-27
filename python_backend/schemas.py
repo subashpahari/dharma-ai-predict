@@ -49,6 +49,8 @@ class ReportCreate(BaseModel):
     complication_low: Optional[float] = None
     complication_high: Optional[float] = None
     complication_note: Optional[str] = None
+    
+    shap_values: Optional[List[dict]] = None
 
 class ReportOut(BaseModel):
     id: uuid.UUID
@@ -71,6 +73,8 @@ class ReportOut(BaseModel):
     confidence_high: float
     result_status: str
     clinical_note: str
+
+    shap_values: Optional[List[dict]] = None
 
     complication_score: Optional[float] = None
     complication_status: Optional[str] = None

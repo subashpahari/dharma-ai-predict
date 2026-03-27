@@ -20,6 +20,7 @@ export interface Report {
   confidence_low: number;
   confidence_high: number;
   clinical_note: string;
+  shap_values: any[];
   complication_score?: number;
   complication_status?: string;
   complication_low?: number;
@@ -67,6 +68,7 @@ export function useReports(userId: string | undefined) {
         confidence_high: result.confidenceHigh,
         result_status: result.resultStatus,
         clinical_note: result.clinicalNote,
+        shap_values: result.shapValues,
         complication_score: result.complication?.probability,
         complication_status: result.complication?.result,
         complication_low: result.complication?.confidenceLow,

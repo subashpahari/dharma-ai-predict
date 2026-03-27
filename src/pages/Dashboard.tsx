@@ -143,16 +143,18 @@ export default function Dashboard() {
       confidenceHigh: report.confidence_high,
       resultStatus: report.result_status,
       clinicalNote: report.clinical_note,
-      shapValues: [],
+      shapValues: report.shap_values || [],
       complication: complicationData
     });
 
-    // Re-calculate to get SHAP values
-    try {
-      const fullResult = await calculatePrediction(input);
-      setResult(fullResult);
-    } catch (e) {
-      console.error("Failed to re-calculate SHAP", e);
+    // Re-calculate ONLY if SHAP values are missing (for old records)
+    if (!report.shap_values || report.shap_values.length === 0) {
+      try {
+        const fullResult = await calculatePrediction(input);
+        setResult(fullResult);
+      } catch (e) {
+        console.error("Failed to re-calculate SHAP", e);
+      }
     }
   }, []);
 

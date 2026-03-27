@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, LayoutDashboard, Clock, MoreVertical, Activity } from 'lucide-react';
+import { Users, LayoutDashboard, Clock, MoreVertical, Activity, Brain } from 'lucide-react';
 import DharmaScoreCard from '@/components/DharmaScoreCard';
+import ShapChart from '@/components/ShapChart';
 import { AdminReport } from '@/hooks/useAdmin';
 
 interface ClinicalDetailProps {
@@ -73,7 +74,7 @@ export function ClinicalDetail({ selectedReport }: ClinicalDetailProps) {
           confidenceHigh: selectedReport.confidence_high,
           resultStatus: selectedReport.result_status,
           clinicalNote: selectedReport.clinical_note,
-          shapValues: [],
+          shapValues: selectedReport.shap_values || [],
           complication: selectedReport.complication_status ? {
             probability: selectedReport.complication_score || 0,
             confidenceLow: selectedReport.complication_low || 0,
@@ -84,6 +85,16 @@ export function ClinicalDetail({ selectedReport }: ClinicalDetailProps) {
           } : undefined
         }} 
       />
+
+      {/* SHAP Analysis (New for Admin) */}
+      {selectedReport.shap_values && selectedReport.shap_values.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest pl-2 flex items-center gap-2">
+            <Brain className="w-3.5 h-3.5 text-coral" /> Diagnosis Interpretation (SHAP)
+          </h4>
+          <ShapChart shapValues={selectedReport.shap_values} />
+        </div>
+      )}
 
       {/* Patient Profile */}
       <div className="glass-card overflow-hidden">

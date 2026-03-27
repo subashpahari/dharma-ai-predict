@@ -29,6 +29,10 @@ try:
         conn.execute(text("ALTER TABLE reports ALTER COLUMN free_fluids DROP NOT NULL;"))
         conn.execute(text("ALTER TABLE reports ALTER COLUMN urinary_ketones DROP NOT NULL;"))
         conn.execute(text("ALTER TABLE reports ALTER COLUMN peritonitis DROP NOT NULL;"))
+        try:
+            conn.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS shap_values JSON;"))
+        except:
+            pass
         conn.commit()
 except Exception as e:
     print(f"Db migration skip or error: {e}")
@@ -83,10 +87,6 @@ model_comp = joblib.load(os.path.join(BASE_DIR, "models/dharma_comp.joblib"))
 imputer = joblib.load(os.path.join(BASE_DIR, "models/imputer_model.joblib"))
 
 
-
-@app.options("/api/predict")
-async def predict_options():
-    return {}
 
 @app.post("/api/predict")
 async def predict(data: PatientData):

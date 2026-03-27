@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Boolean, Numeric, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Boolean, Numeric, DateTime, ForeignKey, Text, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -39,6 +39,8 @@ class Report(Base):
     confidence_high = Column(Numeric, default=0, nullable=False)
     result_status = Column(Text, default='', nullable=False)
     clinical_note = Column(Text, default='', nullable=False)
+    
+    shap_values = Column(JSON, nullable=True)
 
     complication_score = Column(Numeric, nullable=True)
     complication_status = Column(Text, nullable=True)
