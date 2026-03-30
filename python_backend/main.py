@@ -14,28 +14,36 @@ from utils.notes import interpret
 from sklearn.model_selection import train_test_split
 
 from routers import users, reports
-from database import engine
-import models
+import time
+from sqlalchemy import text
 
-# Initialize Db
-models.Base.metadata.create_all(bind=engine)
-
-# Use database-level ALTERs to make fields optional if they were already created
-try:
-    from sqlalchemy import text
-    with engine.connect() as conn:
-        conn.execute(text("ALTER TABLE reports ALTER COLUMN crp DROP NOT NULL;"))
-        conn.execute(text("ALTER TABLE reports ALTER COLUMN appendix_diameter DROP NOT NULL;"))
-        conn.execute(text("ALTER TABLE reports ALTER COLUMN free_fluids DROP NOT NULL;"))
-        conn.execute(text("ALTER TABLE reports ALTER COLUMN urinary_ketones DROP NOT NULL;"))
-        conn.execute(text("ALTER TABLE reports ALTER COLUMN peritonitis DROP NOT NULL;"))
-        try:
-            conn.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS shap_values JSON;"))
-        except:
-            pass
-        conn.commit()
-except Exception as e:
-    print(f"Db migration skip or error: {e}")
+# Initialize Db with retry logic for Docker environments
+max_retries = 5
+for i in range(max_retries):
+    try:
+        print(f"Connecting to database (attempt {i+1}/{max_retries})...")
+        models.Base.metadata.create_all(bind=engine)
+        
+        # Use database-level ALTERs to make fields optional if they were already created
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE reports ALTER COLUMN crp DROP NOT NULL;"))
+            conn.execute(text("ALTER TABLE reports ALTER COLUMN appendix_diameter DROP NOT NULL;"))
+            conn.execute(text("ALTER TABLE reports ALTER COLUMN free_fluids DROP NOT NULL;"))
+            conn.execute(text("ALTER TABLE reports ALTER COLUMN urinary_ketones DROP NOT NULL;"))
+            conn.execute(text("ALTER TABLE reports ALTER COLUMN peritonitis DROP NOT NULL;"))
+            try:
+                conn.execute(text("ALTER TABLE reports ADD COLUMN IF NOT EXISTS shap_values JSON;"))
+            except:
+                pass
+            conn.commit()
+        print("Database connected and migrated successfully!")
+        break
+    except Exception as e:
+        if i == max_retries - 1:
+            print(f"Critical Error: Failed to connect to database after {max_retries} attempts.")
+            raise e
+        print(f"Database connection failed: {e}. Retrying in 5s...")
+        time.sleep(5)
 
 app = FastAPI(title="DharmaAPI")
 
