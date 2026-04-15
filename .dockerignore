@@ -1,0 +1,7 @@
+# Ignore Docker volumes and config directories
+npm/
+certbot/
+node_modules/
+dist/
+.env
+*.log
