@@ -100,7 +100,7 @@ class PatientData(BaseModel):
 
 
 # ---------------- API ----------------
-@app.post("/api/predict")
+@app.post("/predict")
 async def predict(data: PatientData):
     try:
         input_dict = data.dict()
