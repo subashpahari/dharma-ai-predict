@@ -53,7 +53,7 @@ export async function calculatePrediction(input: PredictionInput): Promise<Predi
   };
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/predict`, {
+    const response = await fetch(`${BACKEND_URL}/predict`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

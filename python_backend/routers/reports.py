@@ -5,7 +5,7 @@ import models, schemas, database
 from .users import get_current_user
 import uuid
 
-router = APIRouter(prefix="/api/reports", tags=["reports"])
+router = APIRouter(prefix="/reports", tags=["reports"])
 
 def get_db():
     db = database.SessionLocal()
