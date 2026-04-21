@@ -100,6 +100,10 @@ class PatientData(BaseModel):
 
 
 # ---------------- API ----------------
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
+
 @app.post("/predict")
 async def predict(data: PatientData):
     try:
