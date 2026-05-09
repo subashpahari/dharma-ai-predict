@@ -73,8 +73,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users.router)
-app.include_router(reports.router)
+app.include_router(users.router, prefix="/api")
+app.include_router(reports.router, prefix="/api")
 
 
 # ---------------- MODELS ----------------
@@ -104,12 +104,12 @@ class PatientData(BaseModel):
 async def health_check():
     return {"status": "ok"}
 
-@app.post("/predict")
+@app.post("/api/predict")
 async def predict(data: PatientData):
     try:
         input_dict = data.dict()
 
-        input_dict["Appendix_Diameter_flag"] = 1 if input_dict.get("Appendix_Diameter") else 0
+        input_dict["Appendix_Diameter_flag"] = 1 if input_dict.get("Appendix_Diameter") is not None else 0
 
         df = pd.DataFrame([input_dict]).replace({None: np.nan})
 
@@ -137,17 +137,29 @@ async def predict(data: PatientData):
         x_diag = x_df[model_diag.feature_names_in_]
         x_comp = x_df[model_comp.feature_names_in_]
 
-        pred_diag = model_diag.predict_proba(x_diag)[0][1]
+        # Get flag from x_df (it might not be in model_diag.feature_names_in_)
+        flag = int(x_df["Appendix_Diameter_flag"].values[0])
 
+        # Diagnosis Prediction
+        pred_diag = model_diag.predict_proba(x_diag)[0][1]
         upper, lower = CI95(model_diag, x_diag)
         shap_vals, base = shap_explanation(model_diag, x_diag)
-
-        flag = x_diag["Appendix_Diameter_flag"].values[0]
         result, note = interpret(flag, upper, lower, task="diagnosis")
 
         shap_diag = [
             {"feature": f, "contribution": float(v)}
             for f, v in zip(model_diag.feature_names_in_, shap_vals)
+        ]
+
+        # Complications Prediction
+        pred_comp = model_comp.predict_proba(x_comp)[0][1]
+        upper_comp, lower_comp = CI95(model_comp, x_comp)
+        shap_vals_comp, base_comp = shap_explanation(model_comp, x_comp)
+        result_comp, note_comp = interpret(flag, upper_comp, lower_comp, task="complications")
+
+        shap_comp = [
+            {"feature": f, "contribution": float(v)}
+            for f, v in zip(model_comp.feature_names_in_, shap_vals_comp)
         ]
 
         return {
@@ -158,6 +170,14 @@ async def predict(data: PatientData):
                 "note": note,
                 "shap_values": shap_diag,
                 "base_value": round(base, 4),
+            },
+            "complication": {
+                "probability": round(pred_comp * 100, 0),
+                "confidence_interval": [round(lower_comp * 100, 0), round(upper_comp * 100, 0)],
+                "result": result_comp,
+                "note": note_comp,
+                "shap_values": shap_comp,
+                "base_value": round(base_comp, 4),
             }
         }
 
