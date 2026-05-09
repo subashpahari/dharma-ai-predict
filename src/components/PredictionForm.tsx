@@ -87,7 +87,7 @@ export default function PredictionForm({
       return;
     }
 
-    if (wbc < 10 || wbc > 100) {
+    if (wbc < 0 || wbc > 100) {
       setError("WBC count must be between 10–100 (10³/µL)");
       return;
     }
