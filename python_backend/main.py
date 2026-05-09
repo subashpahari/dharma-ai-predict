@@ -73,8 +73,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users.router, prefix="/api")
-app.include_router(reports.router, prefix="/api")
+app.include_router(users.router)
+app.include_router(reports.router)
 
 
 # ---------------- MODELS ----------------
@@ -104,7 +104,7 @@ class PatientData(BaseModel):
 async def health_check():
     return {"status": "ok"}
 
-@app.post("/api/predict")
+@app.post("/predict")
 async def predict(data: PatientData):
     try:
         input_dict = data.dict()
