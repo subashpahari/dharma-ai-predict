@@ -11,6 +11,10 @@ DATABASE_URL = os.getenv(
     "postgresql://postgres:postgres@localhost:5432/dharma_ai"
 )
 
+# SQLAlchemy 2.0 compatibility: ensure dialect driver is specified
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+
 engine = create_engine(
     DATABASE_URL,
     pool_size=5,
