@@ -38,7 +38,9 @@ services:
       db:
         condition: service_healthy
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - dharma-backend
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
