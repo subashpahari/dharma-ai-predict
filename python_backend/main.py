@@ -152,15 +152,28 @@ async def predict(data: PatientData):
         ]
 
         # Complications Prediction
-        pred_comp = model_comp.predict_proba(x_comp)[0][1]
-        upper_comp, lower_comp = CI95(model_comp, x_comp)
-        shap_vals_comp, base_comp = shap_explanation(model_comp, x_comp)
-        result_comp, note_comp = interpret(flag, upper_comp, lower_comp, task="complications")
+        threshold_comp = 0.5 if flag == 0 else 0.44
+        if upper >= threshold_comp:
+            pred_comp = model_comp.predict_proba(x_comp)[0][1]
+            upper_comp, lower_comp = CI95(model_comp, x_comp)
+            shap_vals_comp, base_comp = shap_explanation(model_comp, x_comp)
+            result_comp, note_comp = interpret(flag, upper_comp, lower_comp, task="complications")
 
-        shap_comp = [
-            {"feature": f, "contribution": float(v)}
-            for f, v in zip(model_comp.feature_names_in_, shap_vals_comp)
-        ]
+            shap_comp = [
+                {"feature": f, "contribution": float(v)}
+                for f, v in zip(model_comp.feature_names_in_, shap_vals_comp)
+            ]
+
+            comp_result = {
+                "probability": round(pred_comp * 100, 0),
+                "confidence_interval": [round(lower_comp * 100, 0), round(upper_comp * 100, 0)],
+                "result": result_comp,
+                "note": note_comp,
+                "shap_values": shap_comp,
+                "base_value": round(base_comp, 4),
+            }
+        else:
+            comp_result = None
 
         return {
             "diagnosis": {
@@ -171,14 +184,7 @@ async def predict(data: PatientData):
                 "shap_values": shap_diag,
                 "base_value": round(base, 4),
             },
-            "complication": {
-                "probability": round(pred_comp * 100, 0),
-                "confidence_interval": [round(lower_comp * 100, 0), round(upper_comp * 100, 0)],
-                "result": result_comp,
-                "note": note_comp,
-                "shap_values": shap_comp,
-                "base_value": round(base_comp, 4),
-            }
+            "complication": comp_result
         }
 
     except Exception as e:
